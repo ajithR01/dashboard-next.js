@@ -1,103 +1,113 @@
-import Image from "next/image";
+"use client";
+
+import React, { useEffect, useState, useMemo } from "react";
+import { FaUsers, FaDollarSign, FaChartLine } from "react-icons/fa";
+import { MdOutlineRateReview } from "react-icons/md";
+
+import StatCard from "@/components/StatCard";
+import OrderTable from "@/components/OrderTable";
+import OrderStatusChart from "@/components/charts/OrderStatusChart";
+import RevenueChart from "@/components/charts/RevenueChart";
+import SalesTrendChart from "@/components/charts/SalesTrendChart";
+import DatePicker from "@/components/DatePicker";
+import MostOrderedItems from "@/components/charts/MostOrderedItems";
+import Layout from "@/components/layout/Layout";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [orders, setOrders] = useState([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  useEffect(() => {
+    fetch("orders.json")
+      .then((res) => res.json())
+      .then((data) => setOrders(data));
+  }, []);
+
+  const revenueData = [
+    { month: "Jan", revenue: 4000 },
+    { month: "Feb", revenue: 8000 },
+    { month: "Mar", revenue: 12000 },
+    { month: "Apr", revenue: 5000 },
+  ];
+
+  const totalSum = useMemo(() => {
+    return Math.round(
+      orders.reduce((sum, order) => {
+        return (
+          sum +
+          (order.Items
+            ? order.Items.reduce(
+                (itemSum, item) => itemSum + (item.Total_Price || 0),
+                0
+              )
+            : 0)
+        );
+      }, 0)
+    );
+  }, [orders]); // Recomputes only when `orders` change
+
+  const orderStatusData = [
+    {
+      name: "Pending",
+      value: orders.filter((o) => o.Order_Status === "Pending").length,
+    },
+    {
+      name: "Completed",
+      value: orders.filter((o) => o.Order_Status === "Completed").length,
+    },
+    {
+      name: "Cancelled",
+      value: orders.filter((o) => o.Order_Status === "Cancelled").length,
+    },
+  ];
+
+  const activeUsersData = [
+    { month: "Jan", users: 800 },
+    { month: "Feb", users: 1200 },
+    { month: "Mar", users: 1800 },
+    { month: "Apr", users: 2400 },
+  ];
+
+  return (
+    <Layout>
+      <section className="grid gap-6 mt-6">
+        <DatePicker />
+      </section>
+      <section className="grid md:grid-cols-4 gap-6 mt-6">
+        <StatCard
+          icon={<FaDollarSign size={30} />}
+          title="Revenue"
+          value={`$${totalSum}`}
+        />
+        <StatCard
+          icon={<FaUsers size={30} />}
+          title="Orders Today"
+          value="145"
+        />
+        <StatCard
+          icon={<FaChartLine size={30} />}
+          title="Conversion Rate"
+          value="8.2%"
+        />
+        <StatCard
+          icon={<MdOutlineRateReview size={30} />}
+          title="Customer Reviews"
+          value="4.4/5"
+        />
+      </section>
+      {/* Charts Section */}
+      <section className="grid md:grid-cols-3 gap-6 mt-8">
+        {/* Revenue Chart */}
+        <RevenueChart revenueData={revenueData} />
+
+        {/* Order Chart */}
+        <OrderStatusChart orderStatusData={orderStatusData} />
+
+        {/* Active Chart */}
+        <SalesTrendChart activeUsersData={activeUsersData} />
+
+        <MostOrderedItems />
+      </section>
+      {orders && <OrderTable orders={orders} />} {/* </main> */}
+    </Layout>
   );
 }
