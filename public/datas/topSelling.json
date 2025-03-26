@@ -1,0 +1,8 @@
+[
+    { "name": "Biriyani", "value": 400, "color": "#0088FE" },
+    { "name": "Tandoori", "value": 300, "color": "#00C49F" },
+    { "name": "Fried Chicken", "value": 300, "color": "#FFBB28" },
+    { "name": "Pizza", "value": 200, "color": "#FF8042" },
+    { "name": "Tandoori Burger", "value": 200, "color": "#f64141" }
+  ]
+  

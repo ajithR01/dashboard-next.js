@@ -1,0 +1,10 @@
+[
+    { "name": "Mon", "sales": 5000 },
+    { "name": "Tue", "sales": 7000 },
+    { "name": "Wed", "sales": 6000 },
+    { "name": "Thu", "sales": 8000 },
+    { "name": "Fri", "sales": 9000 },
+    { "name": "Sat", "sales": 12000 },
+    { "name": "Sun", "sales": 15000 }
+  ]
+  

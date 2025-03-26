@@ -87,10 +87,9 @@ export default function Sidebar({ open, setOpen }) {
       className={`fixed lg:relative top-0 left-0 h-full w-64 bg-white shadow-md transition-transform 
       ${open ? "translate-x-0" : "-translate-x-64"} lg:translate-x-0`}
     >
-      {/* Close Button (Mobile Only) */}
       <div className="flex items-center justify-between p-4 lg:hidden">
         <Typography variant="h5" color="blue-gray">
-          Sidebar
+          Pasta & Co.
         </Typography>
         <button onClick={() => setOpen(false)} className="text-gray-600">
           ✖
@@ -101,7 +100,7 @@ export default function Sidebar({ open, setOpen }) {
       <Card className="h-[calc(100vh-2rem)] w-full p-4">
         <div className="mb-2 p-4">
           <Typography variant="h5" color="blue-gray">
-            Sidebar
+            Pasta & Co.
           </Typography>
         </div>
         <List className="space-y-1">

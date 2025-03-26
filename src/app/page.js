@@ -4,46 +4,44 @@ import React, { useEffect, useState, useMemo } from "react";
 import { FaUsers, FaDollarSign, FaChartLine } from "react-icons/fa";
 import { MdOutlineRateReview } from "react-icons/md";
 
-import StatCard from "@/components/StatCard";
-import OrderTable from "@/components/OrderTable";
-import OrderStatusChart from "@/components/charts/OrderStatusChart";
-import RevenueChart from "@/components/charts/RevenueChart";
-import SalesTrendChart from "@/components/charts/SalesTrendChart";
+import StatCard from "@/components/Analytics/StatCard";
+import OrderTable from "@/components/Tables/OrderTable";
+import OrderStatusChart from "@/components/Analytics/charts/OrderStatusChart";
+import RevenueChart from "@/components/Analytics/charts/RevenueChart";
+import SalesTrendChart from "@/components/Analytics/charts/SalesTrendChart";
 import DatePicker from "@/components/DatePicker";
-import MostOrderedItems from "@/components/charts/MostOrderedItems";
+import MostOrderedItems from "@/components/Analytics/charts/MostOrderedItems";
+import SummarySection from "@/components/Analytics/SummarySection";
 import Layout from "@/components/layout/Layout";
 
 export default function Home() {
   const [orders, setOrders] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [salesTrend, setSalesTrend] = useState([]);
 
   useEffect(() => {
-    fetch("orders.json")
-      .then((res) => res.json())
-      .then((data) => setOrders(data));
+    fetchOrders();
+    fetchRevenue();
+    fetchSalesTrend();
   }, []);
 
-  const revenueData = [
-    { month: "Jan", revenue: 4000 },
-    { month: "Feb", revenue: 8000 },
-    { month: "Mar", revenue: 12000 },
-    { month: "Apr", revenue: 5000 },
-  ];
+  function fetchOrders() {
+    fetch("datas/orders.json")
+      .then((res) => res.json())
+      .then((data) => setOrders(data));
+  }
 
-  const totalSum = useMemo(() => {
-    return Math.round(
-      orders.reduce((sum, order) => {
-        return (
-          sum +
-          (order.Items
-            ? order.Items.reduce(
-                (itemSum, item) => itemSum + (item.Total_Price || 0),
-                0
-              )
-            : 0)
-        );
-      }, 0)
-    );
-  }, [orders]); // Recomputes only when `orders` change
+  function fetchRevenue() {
+    fetch("datas/revenue.json")
+      .then((res) => res.json())
+      .then((data) => setRevenueData(data));
+  }
+
+  function fetchSalesTrend() {
+    fetch("datas/salesTrend.json")
+      .then((res) => res.json())
+      .then((data) => setSalesTrend(data));
+  }
 
   const orderStatusData = [
     {
@@ -60,18 +58,30 @@ export default function Home() {
     },
   ];
 
-  const activeUsersData = [
-    { month: "Jan", users: 800 },
-    { month: "Feb", users: 1200 },
-    { month: "Mar", users: 1800 },
-    { month: "Apr", users: 2400 },
-  ];
+  const totalSum = useMemo(() => {
+    return Math.round(
+      orders.reduce((sum, order) => {
+        return (
+          sum +
+          (order.Items
+            ? order.Items.reduce(
+                (itemSum, item) => itemSum + (item.Total_Price || 0),
+                0
+              )
+            : 0)
+        );
+      }, 0)
+    );
+  }, [orders]);
 
   return (
     <Layout>
+      {/* Date picker */}
       <section className="grid gap-6 mt-6">
         <DatePicker />
       </section>
+
+      {/* Stats */}
       <section className="grid md:grid-cols-4 gap-6 mt-6">
         <StatCard
           icon={<FaDollarSign size={30} />}
@@ -94,20 +104,34 @@ export default function Home() {
           value="4.4/5"
         />
       </section>
+
       {/* Charts Section */}
-      <section className="grid md:grid-cols-3 gap-6 mt-8">
-        {/* Revenue Chart */}
-        <RevenueChart revenueData={revenueData} />
+      <section className="grid md:grid-cols-12 gap-6 mt-8">
+        <div className="md:col-span-4">
+          <RevenueChart revenueData={revenueData} />
+        </div>
 
-        {/* Order Chart */}
-        <OrderStatusChart orderStatusData={orderStatusData} />
+        <div className="md:col-span-4">
+          <OrderStatusChart orderStatusData={orderStatusData} />
+        </div>
 
-        {/* Active Chart */}
-        <SalesTrendChart activeUsersData={activeUsersData} />
+        <div className="md:col-span-4">
+          <SalesTrendChart salesPerMonth={salesTrend} />
+        </div>
 
-        <MostOrderedItems />
+        <div className="md:col-span-7">
+          <SummarySection />
+        </div>
+
+        <div className="md:col-span-5">
+          <MostOrderedItems />
+        </div>
       </section>
-      {orders && <OrderTable orders={orders} />} {/* </main> */}
+
+      {/* Order table */}
+      <section className="grid mt-6">
+        {orders && <OrderTable orders={orders} />}
+      </section>
     </Layout>
   );
 }

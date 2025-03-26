@@ -11,7 +11,7 @@ export default function Layout({ children }) {
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex flex-col flex-1">
-        <Navbar setOpen={setOpen} />
+        <Navbar />
 
         {/* Page Content */}
         <main className="flex-1 px-4 py-2 overflow-auto">{children}</main>

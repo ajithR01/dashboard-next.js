@@ -9,23 +9,13 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const salesData = [
-  { name: "Mon", sales: 5000 },
-  { name: "Tue", sales: 7000 },
-  { name: "Wed", sales: 6000 },
-  { name: "Thu", sales: 8000 },
-  { name: "Fri", sales: 9000 },
-  { name: "Sat", sales: 12000 },
-  { name: "Sun", sales: 15000 },
-];
-
-export default function ActiveUsersChart() {
+export default function ActiveUsersChart({ salesPerMonth }) {
   return (
     <div className="bg-white p-6 shadow-md rounded-md">
       <h3 className="text-lg font-semibold mb-4">Sales Trend</h3>
 
       <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={salesData}>
+        <LineChart data={salesPerMonth}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
           <XAxis dataKey="name" stroke="#64748b" />
           <YAxis stroke="#64748b" />
