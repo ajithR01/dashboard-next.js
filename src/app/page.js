@@ -18,11 +18,13 @@ export default function Home() {
   const [orders, setOrders] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
   const [salesTrend, setSalesTrend] = useState([]);
+  const [topSelling, setTopSelling] = useState([]);
 
   useEffect(() => {
     fetchOrders();
     fetchRevenue();
     fetchSalesTrend();
+    fetchTopSelling();
   }, []);
 
   function fetchOrders() {
@@ -41,6 +43,12 @@ export default function Home() {
     fetch("datas/salesTrend.json")
       .then((res) => res.json())
       .then((data) => setSalesTrend(data));
+  }
+
+  function fetchTopSelling() {
+    fetch("datas/topSelling.json")
+      .then((res) => res.json())
+      .then((data) => setTopSelling(data));
   }
 
   const orderStatusData = [
@@ -124,7 +132,7 @@ export default function Home() {
         </div>
 
         <div className="md:col-span-5">
-          <MostOrderedItems />
+          <MostOrderedItems topSelling={topSelling} />
         </div>
       </section>
 

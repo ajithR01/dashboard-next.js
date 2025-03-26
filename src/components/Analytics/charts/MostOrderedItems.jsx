@@ -1,14 +1,6 @@
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-const data = [
-  { name: "Biriyani", value: 400, color: "#0088FE" },
-  { name: "Tandoori", value: 300, color: "#00C49F" },
-  { name: "Fried Chicken", value: 300, color: "#FFBB28" },
-  { name: "Pizza", value: 200, color: "#FF8042" },
-  { name: "Tandoori Burger", value: 200, color: "#f64141" },
-];
-
 const RADIAN = Math.PI / 180;
 
 const renderCustomizedLabel = ({
@@ -37,7 +29,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function MostOrderedItems() {
+export default function MostOrderedItems({ topSelling }) {
   return (
     <div className="bg-white p-6 shadow-md rounded-md">
       <h3 className="text-lg font-semibold mb-4">Top Orders</h3>
@@ -45,7 +37,7 @@ export default function MostOrderedItems() {
       <ResponsiveContainer width="100%" height={250}>
         <PieChart>
           <Pie
-            data={data}
+            data={topSelling}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -53,7 +45,7 @@ export default function MostOrderedItems() {
             outerRadius={80}
             dataKey="value"
           >
-            {data.map((entry, index) => (
+            {topSelling.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
@@ -61,7 +53,7 @@ export default function MostOrderedItems() {
       </ResponsiveContainer>
 
       <div className="flex flex-wrap justify-center gap-4 mt-4">
-        {data.map((entry, index) => (
+        {topSelling.map((entry, index) => (
           <div key={index} className="flex items-center space-x-2">
             <div
               className="w-4 h-4 rounded-full"
